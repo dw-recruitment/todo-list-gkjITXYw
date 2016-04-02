@@ -10,6 +10,7 @@
 
 (cc/defroutes app-routes
               (cc/GET "/" [] (slurp "resources/templates/home.html"))
+              (cc/GET "/about" [] (slurp "resources/templates/about.html"))
               (route/not-found "Not Found"))
 
 (def app
