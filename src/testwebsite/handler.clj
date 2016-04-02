@@ -1,11 +1,19 @@
 (ns testwebsite.handler
-  (:require [compojure.core :refer :all]
+  (:require [testwebsite.views :as views]
+            [compojure.core :as cc]
             [compojure.route :as route]
-            [ring.middleware.defaults :refer [wrap-defaults site-defaults]]))
+            [ring.middleware.resource :as resource]
+            [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
+            ))
 
-(defroutes app-routes
-  (GET "/" [] "Hello World")
-  (route/not-found "Not Found"))
+
+
+(cc/defroutes app-routes
+              (cc/GET "/" [] (slurp "resources/templates/home.html"))
+              (route/not-found "Not Found"))
 
 (def app
-  (wrap-defaults app-routes site-defaults))
+  (-> app-routes
+      (resource/wrap-resource "public")
+      )
+  )
