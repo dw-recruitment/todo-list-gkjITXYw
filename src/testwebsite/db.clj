@@ -14,5 +14,7 @@
 
 (defn select-todos-from-db []
   (doall
-    (sql/query db ["SELECT text, doneness FROM todo;"])))
+    (sql/query db ["SELECT todo_id, text, doneness FROM todo;"])))
 
+(defn create-todo [text doneness]
+  (sql/insert! db :todo {:text text :doneness (str doneness)}))
