@@ -6,10 +6,9 @@
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             ))
 
-
-
 (cc/defroutes app-routes
-              (cc/GET "/" [] (slurp "resources/templates/home.html"))
+              (cc/GET "/" [] (views/home-page))
+              (cc/GET "/home" [] (slurp "resources/templates/home.html"))
               (cc/GET "/about" [] (slurp "resources/templates/about.html"))
               (route/not-found "Not Found"))
 
