@@ -28,13 +28,7 @@
     [:p "These are your Todo's"]
     [:ul
      (for [todo (db/select-todos-from-db)]
-       [:li (str (:text todo) " " (:doneness todo))])]
+       [:li [:del (:text todo)] (:doneness todo)])]
     [:h3 "Add a Todo"]
     [:form {:action "/add-todo" :method "POST"}
-     [:p "Text: " [:input {:type "text" :name "text"}]]
-     [:p [:input {:type "submit" :value "create todo"}]]]))
-
-(defn add-todo-results-page [params]
-  (let [text (get params "text")
-        id (db/create-todo text :todo)]
-    (home-page)))
+     [:p "Text: " [:input {:type "text" :name "text"}] [:input {:type "submit" :value "create todo"}]]]))
