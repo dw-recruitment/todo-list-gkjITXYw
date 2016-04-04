@@ -13,7 +13,7 @@
    "[ "
    [:a {:href "/"} "Todo's"]
    " | "
-   [:a {:href "/home"} "Home"]
+   [:a {:href "/home"} "Original Under Construction"]
    " | "
    [:a {:href "/about"} "About"]
    " ]"])
@@ -26,27 +26,36 @@
     [:del text]
     text))
 
-(defn create-delete-button [id]
-  [:a {:href (str "/admin/" id "/delete")} [:button {:type "button"} "delete"]])
-
 (defn create-button [id doneness]
   (if (is-done? doneness)
     [:a {:href (str "/admin/" id "/undo")} [:button {:type "button"} "undo"]]
     [:a {:href (str "/admin/" id "/complete")} [:button {:type "button"} "complete"]]))
+
+(defn create-delete-button [id]
+  [:a {:href (str "/admin/" id "/delete")} [:button {:type "button"} "delete"]])
 
 (defn home-page
   []
   (hic-p/html5
     (gen-page-head "Testing")
     header-links
-    [:h1 "Under Construction"]
-    [:p "These are your Todo's:"]
-    [:ul {:style "list-style:none"}
-     (for [todo (db/select-todos-from-db)]
-       (let [text (:text todo)
-             id (:todo_id todo)
-             doneness (:doneness todo)]
-         [:li (create-text text doneness) (str " ") (create-button id doneness) (str " ") (create-delete-button id)]))]
-    [:h3 "Add a Todo"]
+    [:h1 "These are your Todo Lists:"]
+    (for [name (db/select-names-from-db)]
+      [:div
+       [:h3 "List: " (:name name)]
+       [:ul {:style "list-style:none"}
+        (for [todo (db/select-todos-from-db-by-name (:name name))]
+          (let [text (:text todo)
+                id (:todo_id todo)
+                doneness (:doneness todo)]
+            [:li (create-text text doneness) (str " ") (create-button id doneness) (str " ") (create-delete-button id)]))]
+       [:form {:action "/add-todo" :method "POST"}
+        [:input {:type "hidden" :name "name" :value (:name name)}]
+        [:p "Text: " [:input {:type "text" :name "text"}] (str " ") [:input {:type "submit" :value "create todo"}]]]
+       ])
+    [:h3 "Create a new List"]
     [:form {:action "/add-todo" :method "POST"}
-     [:p "Text: " [:input {:type "text" :name "text"}] (str " ") [:input {:type "submit" :value "create todo"}]]]))
+     [:p "List Name: " [:input {:type "text" :name "name"}]
+      [:br]
+      "Text: " [:input {:type "text" :name "text"}]]
+     [:input {:type "submit" :value "create list"}]]))

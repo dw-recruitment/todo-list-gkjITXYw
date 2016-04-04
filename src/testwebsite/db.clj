@@ -1,6 +1,5 @@
 (ns testwebsite.db
-  (:require [clojure.java.jdbc :as sql]
-            ))
+  (:require [clojure.java.jdbc :as sql]))
 
 (let [db-host "localhost"
       db-port 5432
@@ -14,12 +13,16 @@
 (defn convert-id->int [id]
   (Integer/parseInt id))
 
-(defn select-todos-from-db []
+(defn select-names-from-db []
   (doall
-    (sql/query db ["SELECT todo_id, text, doneness FROM todo order by todo_id;"])))
+    (sql/query db ["SELECT distinct(name) FROM todo ORDER BY name;"])))
 
-(defn create-todo [text doneness]
-  (sql/insert! db :todo {:text text :doneness (str doneness)}))
+(defn select-todos-from-db-by-name [name]
+  (doall
+    (sql/query db [(str "SELECT todo_id, name, text, doneness FROM todo WHERE name='" name "' order by todo_id;")])))
+
+(defn create-todo [name text doneness]
+  (sql/insert! db :todo {:name name :text text :doneness (str doneness)}))
 
 (defn update-todo [id doneness]
   (sql/db-do-commands db true (str "UPDATE todo SET doneness='" doneness "' WHERE todo_id = " (convert-id->int id))))

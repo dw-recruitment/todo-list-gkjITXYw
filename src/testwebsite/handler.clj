@@ -23,7 +23,8 @@
 
 (defn add-todo [params]
   (let [text (get params "text")
-        id (db/create-todo text :todo)]
+        name (get params "name")
+        id (db/create-todo name text :todo)]
     (resp/redirect "/")))
 
 (cc/defroutes app-routes
