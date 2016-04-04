@@ -1,6 +1,5 @@
 (ns testwebsite.db
   (:require [clojure.java.jdbc :as sql]
-            [clojure.string :as string]
             ))
 
 (let [db-host "localhost"
@@ -12,9 +11,18 @@
            :user        "postgres"
            :password    "postgres"}))
 
+(defn convert-id->int [id]
+  (Integer/parseInt id))
+
 (defn select-todos-from-db []
   (doall
-    (sql/query db ["SELECT todo_id, text, doneness FROM todo;"])))
+    (sql/query db ["SELECT todo_id, text, doneness FROM todo order by todo_id;"])))
 
 (defn create-todo [text doneness]
   (sql/insert! db :todo {:text text :doneness (str doneness)}))
+
+(defn update-todo [id doneness]
+  (sql/db-do-commands db true (str "UPDATE todo SET doneness='" doneness "' WHERE todo_id = " (convert-id->int id))))
+
+(defn delete-todo [id]
+  (sql/delete! db :todo ["todo_id = ?" (convert-id->int id)]))
