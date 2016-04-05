@@ -22,7 +22,7 @@
     (sql/query db [(str "SELECT todo_id, name, text, doneness FROM todo WHERE name='" name "' order by todo_id;")])))
 
 (defn create-todo [name text doneness]
-  (sql/insert! db :todo {:name name :text text :doneness (str doneness)}))
+  (sql/insert! db :todo {:name (clojure.string/replace name #"'" "") :text (clojure.string/replace text #"'" "") :doneness (str doneness)}))
 
 (defn update-todo [id doneness]
   (sql/db-do-commands db true (str "UPDATE todo SET doneness='" doneness "' WHERE todo_id = " (convert-id->int id))))

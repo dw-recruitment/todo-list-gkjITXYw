@@ -13,6 +13,8 @@
    "[ "
    [:a {:href "/"} "Todo's"]
    " | "
+   [:a {:href "http://cybershopmgr.com/testwebsite.html"} "Step 10"]
+   " | "
    [:a {:href "/home"} "Original Under Construction"]
    " | "
    [:a {:href "/about"} "About"]
